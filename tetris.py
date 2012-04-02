@@ -1,46 +1,35 @@
 import random, time, pygame, sys
 from pygame.locals import *
-#from constants import *
+from constants import *
 
 
-FPS = 30 # frames per second, the general speed of the program
-WINDOWWIDTH = 640 # size of window's width in pixels
-WINDOWHEIGHT = 480 # size of windows' height in pixels
-REVEALSPEED = 8 # speed boxes' sliding reveals and covers
-BOXSIZE = 20 # size of box height & width in pixels
-BOARDWIDTH = 10 # number of columns
-BOARDHEIGHT = 20 # number of rows
-BORDERWIDTH = 5 #thickness of window borders
-PANELWIDTH = 6 # number of columns with spacing
-PANELHEIGHT = 4 # number of columns with spacing
-BLANK = '.'
-assert WINDOWWIDTH > (BOARDWIDTH + PANELWIDTH + 1) * BOXSIZE, 'Board + Panel needs to be smaller than window'
-assert (WINDOWHEIGHT / BOXSIZE) > BOARDHEIGHT, 'Board needs to be smaller than window'
-#XMARGIN = int((WINDOWWIDTH - (BOARDWIDTH * BOXSIZE )) / 2)
-XMARGIN = 20
-YMARGIN = int((WINDOWHEIGHT - (BOARDHEIGHT * BOXSIZE)) / 2)
+'''
 
+Tetris
+    Board
+        pieces
+        draw()
+        isLineComplete()
+        clearCompleteLines()
+        movePiece()
+    Piece
+        shape
+        color
+        orientation
+        draw()
+        rotate()
+    Score
+        value
+    Level
+        value
+    Lines
+        value
+    State
+        Pause
+        Play
+        Quit
 
-#define colors
-#               R    G    B
-WHITE       = (255, 255, 255)
-GRAY        = (185, 185, 185)
-DARKGRAY    = ( 90,  90,  90)
-BLACK       = (  0,   0,   0)
-
-RED         = (155,   0,   0)   #I
-YELLOW      = (155, 155,   0)   #J
-PURPLE      = (255,   0, 255)   #L
-BLUE        = (  0,   0, 155)   #O
-LIGHTBLUE   = ( 20,  20, 175)   #S
-GREEN       = (  0, 155,   0)   #T 
-ORANGE      = (255, 128,   0)   #Z
-
-#color associations
-WINDOWCOLOR = GRAY
-BOARDGAMECOLOR = BLACK
-BORDERCOLOR = DARKGRAY
-TEXTCOLOR = BLACK
+'''
 
 
 def main():
@@ -61,10 +50,10 @@ def main():
         drawNextShapePanel()
         drawScorePanel()
         drawInstructions()
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
+
+        listenForQuit()
+        listenForKeyEvents()
+        
 
         #update screen
         pygame.display.update()
@@ -129,9 +118,78 @@ def drawInstructions():
 
     # Q/Esc to Quit
     quitSurf = FONTOBJ.render('Q/ESC - Quit ', True, TEXTCOLOR)
-    quitRect = playSurf.get_rect()
+    quitRect = quitSurf.get_rect()
     quitRect.topleft = (XMARGIN*2 + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+5))
     DISPLAYSURF.blit(quitSurf, quitRect)
+
+def leftTopCoordsOfBox(boxx, boxy):
+    # Convert board coordinates to pixel coordinates
+    left = boxx * BOXSIZE + XMARGIN
+    top = boxy * BOXSIZE + YMARGIN
+    return (left, top)
+
+def listenForQuit():
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.KEYUP:
+            if (event.key == pygame.K_ESCAPE) or (event.key == pygame.K_q):
+                pygame.quit()
+                sys.exit()
+        pygame.event.post(event) #return the event if not quitting
+
+def listenForKeyEvents():
+    action = None
+    for event in pygame.event.get():
+        #TODO handle keydown first, before adding KEYUP interactions        
+        if event.type == pygame.KEYDOWN:
+            #p for pause/play
+            if event.key == pygame.K_p:
+                pauseGame()
+            #space to drop the piece
+            elif event.key == pygame.K_SPACE:
+                action = DROP
+            #down arrow to speed down
+            elif event.key == pygame.K_DOWN:
+                action = DOWN
+            #left arrow - shift piece left
+            elif event.key == pygame.K_LEFT:
+                action = LEFT
+            #right arrow - shift piece right
+            elif event.key == pygame.K_RIGHT:
+                action = RIGHT
+            #up arrow - rotate piece
+            elif event.key == pygame.K_UP:
+                action = ROTATE
+        pygame.event.post(event)
+    if action:
+        move(action)
+
+def pauseGame():
+    #TODO
+    pausedSurf = FONTOBJ.render('PAUSED', True, WHITE)
+    pausedRect = pausedSurf.get_rect()
+    pausedRect.topleft = (XMARGIN + (BOARDWIDTH * BOXSIZE)/2, YMARGIN + (BOXSIZE * BOARDHEIGHT / 2))
+    DISPLAYSURF.blit(pausedSurf, pausedRect)
+    while resumeGame() == None:
+        pygame.display.update()
+        FPSCLOCK.tick()
+                
+def resumeGame():
+    for event in pygame.event.get([KEYDOWN,KEYUP]):
+        if event.type == KEYDOWN:
+            continue
+        return event.key
+    return None
+
+def move(action):
+    #TODO
+    moveSurf = FONTOBJ.render('Move - %s' % action, True, TEXTCOLOR)
+    moveRect = moveSurf.get_rect()
+    moveRect.topleft = (XMARGIN*2 + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+7))
+    DISPLAYSURF.blit(moveSurf, moveRect)
+    
 
 if __name__ == '__main__':
     main()
