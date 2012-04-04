@@ -3,7 +3,7 @@ from pygame.locals import *
 
 
 FPS = 30 # frames per second, the general speed of the program
-WINDOWWIDTH = 640 # size of window's width in pixels
+WINDOWWIDTH = 580 # size of window's width in pixels
 WINDOWHEIGHT = 480 # size of windows' height in pixels
 REVEALSPEED = 8 # speed boxes' sliding reveals and covers
 BOXSIZE = 20 # size of box height & width in pixels
@@ -14,8 +14,7 @@ PANELWIDTH = 6 # number of columns with spacing
 PANELHEIGHT = 4 # number of columns with spacing
 assert WINDOWWIDTH > (BOARDWIDTH + PANELWIDTH + 1) * BOXSIZE, 'Board + Panel needs to be smaller than window'
 assert (WINDOWHEIGHT / BOXSIZE) > BOARDHEIGHT, 'Board needs to be smaller than window'
-#XMARGIN = int((WINDOWWIDTH - (BOARDWIDTH * BOXSIZE )) / 2)
-XMARGIN = 20
+XMARGIN = int((WINDOWWIDTH - ((BOARDWIDTH + PANELWIDTH + 1) * BOXSIZE )) / 2)
 YMARGIN = int((WINDOWHEIGHT - (BOARDHEIGHT * BOXSIZE)) / 2)
 BBWIDTH = 1
 

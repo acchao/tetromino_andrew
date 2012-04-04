@@ -13,8 +13,8 @@ class Board:
         self.board = self.getBlankBoard()
         self.boardWithPieces = self.getBlankBoard()
         self.displaysurf = displaysurf
-        self.piece = Piece(T)
-        self.nextPiece = Piece(BLANK)
+        self.piece = Piece(random.choice(list(SHAPES)))
+        self.nextPiece = Piece(random.choice(list(SHAPES)))
         #draw the board
         self.draw()
 

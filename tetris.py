@@ -2,6 +2,7 @@ import random, time, pygame, sys
 from pygame.locals import *
 from constants import *
 from Board import *
+from Splashscreen import *
 
 
 '''
@@ -44,16 +45,21 @@ def main():
 
     #set up initial pieces
     board = Board(DISPLAYSURF)
+    splashscreen = Splashscreen(DISPLAYSURF, FONTOBJ)
     DISPLAYSURF.fill(WINDOWCOLOR)
+    splash = True
     
     while True: #main game loop
-        board.draw()
-        drawQueuePanel()
-        drawScorePanel()
-        drawInstructions()
+        if splash:
+            splashscreen.draw()
+        else:
+            board.draw()
+            drawQueuePanel()
+            drawScorePanel()
+            drawInstructions()
 
         listenForQuit()
-        listenForKeyEvents(board)
+        splash = listenForKeyEvents(board,splash)
         
 
         #update screen
@@ -66,43 +72,43 @@ def main():
 def drawQueuePanel():
     # draw the border around the next shape panel
     pygame.draw.rect(DISPLAYSURF, BORDERCOLOR,
-                     (XMARGIN*2 + (BOARDWIDTH * BOXSIZE) - BORDERWIDTH, YMARGIN - BORDERWIDTH,
+                     (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE) - BORDERWIDTH, YMARGIN - BORDERWIDTH,
                      (PANELWIDTH * BOXSIZE) + BORDERWIDTH*2, (PANELHEIGHT * BOXSIZE) + BORDERWIDTH*2), 0)
     # fill the background of the next shape panel
-    pygame.draw.rect(DISPLAYSURF, BOARDGAMECOLOR, (XMARGIN*2 + (BOARDWIDTH * BOXSIZE), 
+    pygame.draw.rect(DISPLAYSURF, BOARDGAMECOLOR, (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), 
                      YMARGIN, BOXSIZE * PANELWIDTH, BOXSIZE * PANELHEIGHT))
 
 def drawScorePanel():
     # Level
     levelSurf = FONTOBJ.render('Level: ', True, TEXTCOLOR)
     levelRect = levelSurf.get_rect()
-    levelRect.topleft = (XMARGIN*2 + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * PANELHEIGHT)
+    levelRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * PANELHEIGHT)
     DISPLAYSURF.blit(levelSurf, levelRect)
 
     # Score
     scoreSurf = FONTOBJ.render('Score: ', True, TEXTCOLOR)
     scoreRect = scoreSurf.get_rect()
-    scoreRect.topleft = (XMARGIN*2 + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+1))
+    scoreRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+1))
     DISPLAYSURF.blit(scoreSurf, scoreRect)
     
     # Lines
     lineSurf = FONTOBJ.render('Lines: ', True, TEXTCOLOR)
     lineRect = lineSurf.get_rect()
-    lineRect.topleft = (XMARGIN*2 + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+2))
+    lineRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+2))
     DISPLAYSURF.blit(lineSurf, lineRect)
 
 def drawInstructions():
     # P to start
     # TODO rotate between play and pause
-    playSurf = FONTOBJ.render('P - Play/Start ', True, TEXTCOLOR)
+    playSurf = FONTOBJ.render('P - Pause/Play ', True, TEXTCOLOR)
     playRect = playSurf.get_rect()
-    playRect.topleft = (XMARGIN*2 + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+4))
+    playRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+4))
     DISPLAYSURF.blit(playSurf, playRect)
 
     # Q/Esc to Quit
-    quitSurf = FONTOBJ.render('Q/ESC - Quit ', True, TEXTCOLOR)
+    quitSurf = FONTOBJ.render('Q - Quit ', True, TEXTCOLOR)
     quitRect = quitSurf.get_rect()
-    quitRect.topleft = (XMARGIN*2 + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+5))
+    quitRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+5))
     DISPLAYSURF.blit(quitSurf, quitRect)
 
 def leftTopCoordsOfBox(boxx, boxy):
@@ -122,11 +128,17 @@ def listenForQuit():
                 sys.exit()
         pygame.event.post(event) #return the event if not quitting
 
-def listenForKeyEvents(board):
+def listenForKeyEvents(board, splash):
     action = None
     for event in pygame.event.get():
+
+        if splash:
+            if event.type == pygame.KEYUP:
+                splash = False
+                DISPLAYSURF.fill(WINDOWCOLOR)
+                break
         #TODO handle keydown first, before adding KEYUP interactions        
-        if event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN:
             #p for pause/play
             if event.key == pygame.K_p:
                 pauseGame()
@@ -150,6 +162,8 @@ def listenForKeyEvents(board):
         move(action)
         board.movePiece(action)
 
+    return splash
+
 def pauseGame():
     #TODO
     pausedSurf = FONTOBJ.render('PAUSED', True, WHITE)
@@ -171,7 +185,7 @@ def move(action):
     #TODO, currently used to show what key stroke has been pressed
     moveSurf = FONTOBJ.render('Move - %s' % action, True, TEXTCOLOR)
     moveRect = moveSurf.get_rect()
-    moveRect.topleft = (XMARGIN*2 + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+7))
+    moveRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+7))
     moveRect.width = moveRect.width + 40
     pygame.draw.rect(DISPLAYSURF, GRAY, moveRect, 0)  #clear old text
     moveRect.width = moveRect.width - 40
