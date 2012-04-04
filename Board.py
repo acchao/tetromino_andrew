@@ -14,6 +14,8 @@ class Board:
         self.boardWithPieces = self.getBlankBoard()
         self.displaysurf = displaysurf
         self.piece = Piece(random.choice(list(SHAPES)))
+        self.completedLines = 0
+        self.totalCompletedLines = 0
         #draw the board
         self.draw()
 
@@ -212,3 +214,29 @@ class Board:
             pass
 
         return valid
+
+    #scan for completed rows, update completedLines, clear them.
+    def clearCompletedRows(self):
+        self.completedLines = 0
+        y = BOARDHEIGHT - 1;
+        while y >= 0:
+            if self.isCompletedRow(y):
+                self.completedLines += 1
+                #clear row by shifting board down
+                for y1 in reversed(range(y)):
+                    for x in range(BOARDWIDTH):
+                        self.boardWithPieces[x][y1+1] = self.boardWithPieces[x][y1]
+                        self.board[x][y1+1] = self.board[x][y1]
+            else:
+                y -= 1
+
+        self.totalCompletedLines += self.completedLines
+
+    
+    #returns a boolean if a row is completed
+    def isCompletedRow(self, y):
+        completed = True
+        for x in range(BOARDWIDTH):
+            if self.boardWithPieces[x][y] == BLANK:
+                completed = False
+        return completed

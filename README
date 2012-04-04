@@ -1,4 +1,41 @@
-Andrew's Tetris Readme
+Tetris Clone
+Author: Andrew Chao
+4/1/2012
+
+Files
+- tetris.py
+- constants.py
+- Board.py
+- Piece.py
+
+Built with
+- Python 3.2
+- Pygame 1.9.2a0
+
+*********************************************************************************
+INSTRUCTIONS
+
+Run tetris.py to start the game. Please make sure you have pygame installed.
+
+
+*********************************************************************************
+VERSION UPDATES
+
+Update 4/4/2012 4:37 PM PST - Version 0.03
+- Reorganized Code for some better structure
+    -Added a Queue Class
+- Lines now clear when completed and # completed is displayed
+- Font is cleaned up (except for splashscreen)
+
+
+Update 4/4/2012 11:04 AM PST - Version 0.03
+- Collision detection
+- Basic Piece movements (arrow keys)
+    -Drop, Down, Left, Right, Rotate
+
+Update 4/2/2012 10:47 AM PST - Version 0.02
+- Began to instantiate classes for board and pieces (redesigning)
+- TODO: get pieces to rotate in place.
 
 Update 4/2/2012 5:38 AM PST - Version 0.01
 - Board Layout is set
