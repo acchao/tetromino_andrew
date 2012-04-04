@@ -33,10 +33,7 @@ class Board:
         # fill the background of the board
         pygame.draw.rect(self.displaysurf, BOARDGAMECOLOR, (XMARGIN, YMARGIN, BOXSIZE * BOARDWIDTH, BOXSIZE * BOARDHEIGHT))
 
-        #place the piece on the board.
-        for x in range(4):
-            for y in range(4):
-                self.board[self.piece.x+x][self.piece.y+y] = self.piece.getGrid()[x][y]
+        self.drawPiece()
 
         # draw the individual boxes on the board
         for x in range(BOARDWIDTH):
@@ -44,6 +41,21 @@ class Board:
                 self.drawBox(x, y, self.board[x][y])
 
         
+
+    def drawPiece(self,dX=0,dY=0):
+        #clear the old piece
+        for x in range(4):
+            for y in range(4):
+                if self.isOnBoard(bX=self.piece.x+x,bY=self.piece.y+y):
+                    self.board[self.piece.x+x][self.piece.y+y] = BLANK
+        #place the piece on the board.
+        self.piece.x += dX
+        self.piece.y += dY
+        for x in range(4):
+            for y in range(4):
+                if self.isOnBoard(bX=self.piece.x+x,bY=self.piece.y+y):
+                    self.board[self.piece.x+x][self.piece.y+y] = self.piece.piece[x][y]
+
 
     #draw each box in the board based on the given x,y, coordinate and box type
     def drawBox(self,x,y,boxType):
@@ -80,3 +92,51 @@ class Board:
         return board
 
     #def getNextPiece(self):
+
+    def movePiece(self, action):
+        if action == DROP:
+            pass
+        elif action == DOWN:
+            if self.isValidMove(action):
+                self.drawPiece(dY=1)
+        elif action == LEFT:
+            self.drawPiece(dX=-1)
+        elif action == RIGHT:
+            self.drawPiece(dX=1)
+    
+    #checks if provided coordinates are still on the board.
+    def isOnBoard(self,bX=0,bY=0):
+        if (0 <= bX < BOARDWIDTH) and (0 <= bY < BOARDHEIGHT):
+            return True
+        else:
+            return False
+
+    def isValidMove(self,action):
+        valid = True
+
+        #generate a list of valid moves base of piece's current position
+        #for x in range(self.piece.gridSize):
+        #    for y in range(self.piece.gridSize):
+
+        if action == DOWN:
+            for y in range(1,self.piece.gridSize):
+                allEmpty = True
+                for x in range(self.piece.gridSize):
+                    if self.piece.piece[x][self.piece.gridSize-y] != BLANK: #if current box is not blank, check below it
+                        print('y')
+                        print(y)
+                        print('x')
+                        print(x)
+                        if self.isOnBoard(bX=(self.piece.x + x), bY=(self.piece.y+self.piece.gridSize-y+1)):    #check if the next spot is on the board
+                            if self.board[self.piece.x + x][self.piece.y+self.piece.gridSize-y+1] != BLANK:     #check if the next spot is blank
+                                valid = False
+                        else:
+                            valid = False
+                        allEmpty = False
+                if not allEmpty:
+                    break
+
+        else:
+            pass
+
+        return valid

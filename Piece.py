@@ -14,28 +14,23 @@ class Piece:
         self.piece = self.setPiece(pieceType)
         self.rotation = 0
         self.rotationLimit = 0
-
+        if self.pieceType == I:
+            self.gridSize = 4
+        else:
+            self.gridSize = 3
         #position on the board
         self.x = 2
         self.y = 0
-
-    def getGrid(self):
-        return self.piece
 
     def rotate(self):
         #Initialize temporary variables
         tempPiece = self.setPiece(BLANK)
         tempCol = [0,0,0,0]
 
-        if self.pieceType == I:
-            rotate = 4
-        else:
-            rotate = 3
-
         #for every column
-        for col in range(rotate):
+        for col in range(self.gridSize):
             #take the column and assign it to the tempPiece Row
-            for index, cell in zip(reversed(range(rotate)),self.piece[col]):
+            for index, cell in zip(reversed(range(self.gridSize)),self.piece[col]):
                 tempPiece[index][col] = cell
             
         self.piece[:] = tempPiece
@@ -52,10 +47,10 @@ class Piece:
         elif pieceType == J:
             piece = [[0,0,0,0],
                      [J,J,J,0],
-                     [J,0,0,0],
+                     [0,0,J,0],
                      [0,0,0,0]]
         elif pieceType == L:
-            piece = [[L,0,0,0],
+            piece = [[0,0,L,0],
                      [L,L,L,0],
                      [0,0,0,0],
                      [0,0,0,0]]

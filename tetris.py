@@ -149,6 +149,7 @@ def listenForKeyEvents(board):
                 
     if action:
         move(action)
+        board.movePiece(action)
 
 def pauseGame():
     #TODO
@@ -176,6 +177,8 @@ def move(action):
     pygame.draw.rect(DISPLAYSURF, GRAY, moveRect, 0)  #clear old text
     moveRect.width = moveRect.width - 40
     DISPLAYSURF.blit(moveSurf, moveRect)
+
+
     
 
 if __name__ == '__main__':
