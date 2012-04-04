@@ -42,6 +42,7 @@ S = 'S'
 T = 'T'
 Z = 'Z'
 BLANK = 0
+SHAPES = (I,J,L,O,S,T,Z)
 
 #color associations
 WINDOWCOLOR = GRAY

@@ -145,7 +145,6 @@ def listenForKeyEvents(board):
             #up arrow - rotate piece
             elif event.key == pygame.K_UP:
                 action = ROTATE
-                board.piece.rotate()
                 
     if action:
         move(action)
@@ -169,7 +168,7 @@ def resumeGame():
     return None
 
 def move(action):
-    #TODO
+    #TODO, currently used to show what key stroke has been pressed
     moveSurf = FONTOBJ.render('Move - %s' % action, True, TEXTCOLOR)
     moveRect = moveSurf.get_rect()
     moveRect.topleft = (XMARGIN*2 + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+7))

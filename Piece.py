@@ -19,13 +19,12 @@ class Piece:
         else:
             self.gridSize = 3
         #position on the board
-        self.x = 2
+        self.x = int(BOARDWIDTH/2) - 2
         self.y = 0
 
     def rotate(self):
         #Initialize temporary variables
         tempPiece = self.setPiece(BLANK)
-        tempCol = [0,0,0,0]
 
         #for every column
         for col in range(self.gridSize):
