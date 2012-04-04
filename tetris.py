@@ -1,6 +1,7 @@
 import random, time, pygame, sys
 from pygame.locals import *
 from constants import *
+from Board import *
 
 
 '''
@@ -42,45 +43,27 @@ def main():
     pygame.display.set_caption('Tetris')
 
     #set up initial pieces
-    board = getBlankBoard()
+    board = Board(DISPLAYSURF)
     DISPLAYSURF.fill(WINDOWCOLOR)
     
     while True: #main game loop
-        drawBoard(board)
-        drawNextShapePanel()
+        board.draw()
+        drawQueuePanel()
         drawScorePanel()
         drawInstructions()
 
         listenForQuit()
-        listenForKeyEvents()
+        listenForKeyEvents(board)
         
 
         #update screen
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-def getBlankBoard():
-    # create and return a new blank board data structure
-    board = []
-    for i in range(BOARDWIDTH):
-        board.append([BLANK] * BOARDHEIGHT)
-    return board
 
 
-def drawBoard(board):
-    # draw the border around the board
-    pygame.draw.rect(DISPLAYSURF, BORDERCOLOR,
-                     (XMARGIN - BORDERWIDTH, YMARGIN - BORDERWIDTH,
-                     (BOARDWIDTH * BOXSIZE) + BORDERWIDTH*2, (BOARDHEIGHT * BOXSIZE) + BORDERWIDTH*2), 0)
 
-    # fill the background of the board
-    pygame.draw.rect(DISPLAYSURF, BOARDGAMECOLOR, (XMARGIN, YMARGIN, BOXSIZE * BOARDWIDTH, BOXSIZE * BOARDHEIGHT))
-    # draw the individual boxes on the board
-    #for x in range(BOARDWIDTH):
-    #    for y in range(BOARDHEIGHT):
-    #        drawBox(x, y, board[x][y])
-
-def drawNextShapePanel():
+def drawQueuePanel():
     # draw the border around the next shape panel
     pygame.draw.rect(DISPLAYSURF, BORDERCOLOR,
                      (XMARGIN*2 + (BOARDWIDTH * BOXSIZE) - BORDERWIDTH, YMARGIN - BORDERWIDTH,
@@ -139,7 +122,7 @@ def listenForQuit():
                 sys.exit()
         pygame.event.post(event) #return the event if not quitting
 
-def listenForKeyEvents():
+def listenForKeyEvents(board):
     action = None
     for event in pygame.event.get():
         #TODO handle keydown first, before adding KEYUP interactions        
@@ -162,7 +145,8 @@ def listenForKeyEvents():
             #up arrow - rotate piece
             elif event.key == pygame.K_UP:
                 action = ROTATE
-        pygame.event.post(event)
+                board.piece.rotate()
+                
     if action:
         move(action)
 
@@ -188,6 +172,9 @@ def move(action):
     moveSurf = FONTOBJ.render('Move - %s' % action, True, TEXTCOLOR)
     moveRect = moveSurf.get_rect()
     moveRect.topleft = (XMARGIN*2 + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+7))
+    moveRect.width = moveRect.width + 40
+    pygame.draw.rect(DISPLAYSURF, GRAY, moveRect, 0)  #clear old text
+    moveRect.width = moveRect.width - 40
     DISPLAYSURF.blit(moveSurf, moveRect)
     
 

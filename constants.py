@@ -12,13 +12,12 @@ BOARDHEIGHT = 20 # number of rows
 BORDERWIDTH = 5 #thickness of window borders
 PANELWIDTH = 6 # number of columns with spacing
 PANELHEIGHT = 4 # number of columns with spacing
-BLANK = '.'
 assert WINDOWWIDTH > (BOARDWIDTH + PANELWIDTH + 1) * BOXSIZE, 'Board + Panel needs to be smaller than window'
 assert (WINDOWHEIGHT / BOXSIZE) > BOARDHEIGHT, 'Board needs to be smaller than window'
 #XMARGIN = int((WINDOWWIDTH - (BOARDWIDTH * BOXSIZE )) / 2)
 XMARGIN = 20
 YMARGIN = int((WINDOWHEIGHT - (BOARDHEIGHT * BOXSIZE)) / 2)
-
+BBWIDTH = 1
 
 #define colors
 #               R    G    B
@@ -28,7 +27,7 @@ DARKGRAY    = ( 90,  90,  90)
 BLACK       = (  0,   0,   0)
 
 RED         = (155,   0,   0)   #I
-YELLOW      = (155, 155,   0)   #J
+YELLOW      = (255, 255,   0)   #J
 PURPLE      = (255,   0, 255)   #L
 BLUE        = (  0,   0, 155)   #O
 LIGHTBLUE   = ( 20,  20, 175)   #S
@@ -36,12 +35,13 @@ GREEN       = (  0, 155,   0)   #T
 ORANGE      = (255, 128,   0)   #Z
 
 I = 'I'
-J= 'J'
+J = 'J'
 L = 'L'
 O = 'O'
 S = 'S'
 T = 'T'
 Z = 'Z'
+BLANK = 0
 
 #color associations
 WINDOWCOLOR = GRAY
@@ -55,3 +55,5 @@ DOWN = 'down'
 DROP = 'drop'
 LEFT = 'left'
 RIGHT = 'right'
+
+
