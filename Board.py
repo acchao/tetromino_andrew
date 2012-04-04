@@ -67,7 +67,10 @@ class Board:
                 if self.isOnBoard(bX=self.piece.x+x,bY=self.piece.y+y):
                     if self.piece.piece[x][y] != BLANK:     #only draw the nonblank tiles
                         self.boardWithPieces[self.piece.x+x][self.piece.y+y] = self.piece.piece[x][y]
+                        self.board[self.piece.x+x][self.piece.y+y] = self.piece.piece[x][y]
 
+    def newPiece(self,shapeType):
+        self.piece = Piece(shapeType)
 
     #draw each box in the board based on the given x,y, coordinate and box type
     def drawBox(self,x,y,boxType):
@@ -106,22 +109,32 @@ class Board:
     #def getNextPiece(self):
 
     def movePiece(self, action):
-        if self.isValidMove(action):
-            if action == DROP:
-                #self.setFakePiece()
+        isSet = False
+        
+        if action == DROP:
+            while self.isValidMove(action):
                 self.clearOldPiece()
-                while self.isValidMove(action):
-                    self.piece.y += 1
-                self.setPiece()
+                self.piece.y += 1
+            self.setPiece()
+            isSet = True
 
-            elif action == DOWN:
+        elif action == DOWN:
+            if self.isValidMove(action):
                 self.drawPiece(dY=1)
-            elif action == LEFT:
+            else:
+                self.setPiece()
+                isSet = True
+        elif action == LEFT:
+            if self.isValidMove(action):
                 self.drawPiece(dX=-1)
-            elif action == RIGHT:
+        elif action == RIGHT:
+            if self.isValidMove(action):
                 self.drawPiece(dX=1)
-            elif action == ROTATE:
+        elif action == ROTATE:
+            if self.isValidMove(action):
                 self.rotate()
+
+        return isSet
     
     def rotate(self):
         #clear the old piece

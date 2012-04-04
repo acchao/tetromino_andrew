@@ -9,10 +9,9 @@ This is the panel that shows the next piece and generates it.
 '''
 
 class Queue:
-    def __init__(self,displaysurf, board):
+    def __init__(self,displaysurf):
         self.panel = self.getBlankPanel()
         self.displaysurf = displaysurf
-        self.board = board
         self.piece = Piece(random.choice(list(SHAPES)))
         self.piece.x = 1
         self.piece.y = 1
@@ -72,17 +71,24 @@ class Queue:
         #place the piece on the board.
         for x in range(4):
             for y in range(4):
-                if self.piece.piece[x][y] != BLANK:     #only draw the nonblank tiles
-                    self.panel[self.piece.x+x][self.piece.y+y] = self.piece.piece[x][y]
+                self.panel[self.piece.x+x][self.piece.y+y] = self.piece.piece[x][y]
 
     def clearOldPiece(self):
         for x in range(4):
             for y in range(4):
                 self.panel[x][y] = BLANK
 
-    def getNextPiece(board):
-        #draw the queued piece
-        board.drawNextPiece(queueX + BOXSIZE*1, queueY + BOXSIZE*1)
+    def getNextPiece(self):
+        nextPieceType = self.piece.pieceType
+        
+        #get a new random shape
+        self.piece.pieceType = random.choice(list(SHAPES))
+        
+        #replace the queued piece
+        self.piece.piece[:] = self.piece.setPiece(self.piece.pieceType)
+
+        #return the next piece
+        return nextPieceType
 
     def getBlankPanel(self):
         panel = []
@@ -90,7 +96,3 @@ class Queue:
         for i in range(PANELWIDTH):
             panel.append([BLANK] * PANELHEIGHT)
         return panel
-
-    def queueNext():
-        shape = random.choice(list(SHAPES))
-        #TODO

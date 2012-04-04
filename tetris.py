@@ -46,7 +46,7 @@ def main():
 
     #set up initial pieces
     board = Board(DISPLAYSURF)
-    queue = Queue(DISPLAYSURF, board)
+    queue = Queue(DISPLAYSURF)
     splashscreen = Splashscreen(DISPLAYSURF, FONTOBJ)
     DISPLAYSURF.fill(WINDOWCOLOR)
     splash = True
@@ -61,7 +61,7 @@ def main():
             drawInstructions()
 
         listenForQuit()
-        splash = listenForKeyEvents(board,splash)
+        splash = listenForKeyEvents(board,queue,splash)
         
 
         #update screen
@@ -115,12 +115,6 @@ def drawInstructions():
     moveRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+7))
     DISPLAYSURF.blit(moveSurf, moveRect)
 
-def leftTopCoordsOfBox(boxx, boxy):
-    # Convert board coordinates to pixel coordinates
-    left = boxx * BOXSIZE + XMARGIN
-    top = boxy * BOXSIZE + YMARGIN
-    return (left, top)
-
 def listenForQuit():
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -132,7 +126,7 @@ def listenForQuit():
                 sys.exit()
         pygame.event.post(event) #return the event if not quitting
 
-def listenForKeyEvents(board, splash):
+def listenForKeyEvents(board, queue, splash):
     action = None
     for event in pygame.event.get():
 
@@ -163,7 +157,7 @@ def listenForKeyEvents(board, splash):
                 action = ROTATE
                 
     if action:
-        move(board, action)
+        move(board, queue, action)
 
     return splash
 
@@ -186,8 +180,10 @@ def resumeGame():
     return None
 
 #include any other movement function calls here.
-def move(board, action):
-    board.movePiece(action)
+def move(board, queue, action):
+    isSet = board.movePiece(action)
+    if isSet:
+        board.newPiece(queue.getNextPiece())
 
 
 

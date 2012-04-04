@@ -33,7 +33,7 @@ RED         = (155,   0,   0)   #I
 YELLOW      = (255, 255,   0)   #J
 PURPLE      = (255,   0, 255)   #L
 BLUE        = (  0,   0, 155)   #O
-LIGHTBLUE   = ( 20,  20, 175)   #S
+LIGHTBLUE   = ( 20,  191, 255)   #S
 GREEN       = (  0, 155,   0)   #T 
 ORANGE      = (255, 128,   0)   #Z
 
