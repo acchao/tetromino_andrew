@@ -38,3 +38,15 @@ class Splashscreen:
         quitRect = quitSurf.get_rect()
         quitRect.topleft = (self.offset, YMARGIN*2 + BOXSIZE * 5)
         self.displaysurf.blit(quitSurf, quitRect)
+
+        # Up Arrows
+        upSurf = self.fontobj.render('Up Arrow - Rotate ', True, TEXTCOLOR)
+        upRect = upSurf.get_rect()
+        upRect.topleft = (self.offset, YMARGIN*2 + BOXSIZE * 6)
+        self.displaysurf.blit(upSurf, upRect)
+
+        # Other Arrows
+        moveSurf = self.fontobj.render('Left, Down, Right Arrows - Move ', True, TEXTCOLOR)
+        moveRect = moveSurf.get_rect()
+        moveRect.topleft = (self.offset, YMARGIN*2 + BOXSIZE * 7)
+        self.displaysurf.blit(moveSurf, moveRect)

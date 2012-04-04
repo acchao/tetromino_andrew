@@ -3,6 +3,7 @@ from pygame.locals import *
 from constants import *
 from Board import *
 from Splashscreen import *
+from Queue import *
 
 
 '''
@@ -45,6 +46,7 @@ def main():
 
     #set up initial pieces
     board = Board(DISPLAYSURF)
+    queue = Queue(DISPLAYSURF, board)
     splashscreen = Splashscreen(DISPLAYSURF, FONTOBJ)
     DISPLAYSURF.fill(WINDOWCOLOR)
     splash = True
@@ -54,7 +56,7 @@ def main():
             splashscreen.draw()
         else:
             board.draw()
-            drawQueuePanel()
+            queue.draw()
             drawScorePanel()
             drawInstructions()
 
@@ -67,16 +69,6 @@ def main():
         FPSCLOCK.tick(FPS)
 
 
-
-
-def drawQueuePanel():
-    # draw the border around the next shape panel
-    pygame.draw.rect(DISPLAYSURF, BORDERCOLOR,
-                     (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE) - BORDERWIDTH, YMARGIN - BORDERWIDTH,
-                     (PANELWIDTH * BOXSIZE) + BORDERWIDTH*2, (PANELHEIGHT * BOXSIZE) + BORDERWIDTH*2), 0)
-    # fill the background of the next shape panel
-    pygame.draw.rect(DISPLAYSURF, BOARDGAMECOLOR, (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), 
-                     YMARGIN, BOXSIZE * PANELWIDTH, BOXSIZE * PANELHEIGHT))
 
 def drawScorePanel():
     # Level
@@ -110,6 +102,18 @@ def drawInstructions():
     quitRect = quitSurf.get_rect()
     quitRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+5))
     DISPLAYSURF.blit(quitSurf, quitRect)
+
+    # Up Arrows
+    upSurf = FONTOBJ.render('Up Arrow - Rotate ', True, TEXTCOLOR)
+    upRect = upSurf.get_rect()
+    upRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+6))
+    DISPLAYSURF.blit(upSurf, upRect)
+
+    # Other Arrows
+    moveSurf = FONTOBJ.render('Other Arrows - Move ', True, TEXTCOLOR)
+    moveRect = moveSurf.get_rect()
+    moveRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+7))
+    DISPLAYSURF.blit(moveSurf, moveRect)
 
 def leftTopCoordsOfBox(boxx, boxy):
     # Convert board coordinates to pixel coordinates
@@ -159,8 +163,7 @@ def listenForKeyEvents(board, splash):
                 action = ROTATE
                 
     if action:
-        move(action)
-        board.movePiece(action)
+        move(board, action)
 
     return splash
 
@@ -175,21 +178,17 @@ def pauseGame():
         FPSCLOCK.tick()
                 
 def resumeGame():
+    #TODO
     for event in pygame.event.get([KEYDOWN,KEYUP]):
         if event.type == KEYDOWN:
             continue
         return event.key
     return None
 
-def move(action):
-    #TODO, currently used to show what key stroke has been pressed
-    moveSurf = FONTOBJ.render('Move - %s' % action, True, TEXTCOLOR)
-    moveRect = moveSurf.get_rect()
-    moveRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+7))
-    moveRect.width = moveRect.width + 40
-    pygame.draw.rect(DISPLAYSURF, GRAY, moveRect, 0)  #clear old text
-    moveRect.width = moveRect.width - 40
-    DISPLAYSURF.blit(moveSurf, moveRect)
+#include any other movement function calls here.
+def move(board, action):
+    board.movePiece(action)
+
 
 
     

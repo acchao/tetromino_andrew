@@ -14,7 +14,6 @@ class Board:
         self.boardWithPieces = self.getBlankBoard()
         self.displaysurf = displaysurf
         self.piece = Piece(random.choice(list(SHAPES)))
-        self.nextPiece = Piece(random.choice(list(SHAPES)))
         #draw the board
         self.draw()
 
@@ -45,8 +44,8 @@ class Board:
     def clearOldPiece(self):
         for x in range(4):
             for y in range(4):
-                    if self.piece.piece[x][y] != BLANK and self.board[self.piece.x+x][self.piece.y+y] != BLANK:
-                        self.board[self.piece.x+x][self.piece.y+y] = BLANK
+                if self.piece.piece[x][y] != BLANK and self.board[self.piece.x+x][self.piece.y+y] != BLANK:
+                    self.board[self.piece.x+x][self.piece.y+y] = BLANK
 
     def drawPiece(self,dX=0,dY=0):
         #clear the old piece
@@ -200,8 +199,3 @@ class Board:
             pass
 
         return valid
-
-
-    def queueNext():
-        shape = random.choice(list(SHAPES))
-        nextPiece.setPiece(shape)

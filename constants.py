@@ -11,12 +11,16 @@ BOARDWIDTH = 10 # number of columns
 BOARDHEIGHT = 20 # number of rows
 BORDERWIDTH = 5 #thickness of window borders
 PANELWIDTH = 6 # number of columns with spacing
-PANELHEIGHT = 4 # number of columns with spacing
+PANELHEIGHT = 5 # number of columns with spacing
+
 assert WINDOWWIDTH > (BOARDWIDTH + PANELWIDTH + 1) * BOXSIZE, 'Board + Panel needs to be smaller than window'
 assert (WINDOWHEIGHT / BOXSIZE) > BOARDHEIGHT, 'Board needs to be smaller than window'
 XMARGIN = int((WINDOWWIDTH - ((BOARDWIDTH + PANELWIDTH + 1) * BOXSIZE )) / 2)
 YMARGIN = int((WINDOWHEIGHT - (BOARDHEIGHT * BOXSIZE)) / 2)
 BBWIDTH = 1
+
+PANELPIXELX = XMARGIN + BOXSIZE * (BOARDWIDTH+1)
+PANELPIXELY = YMARGIN
 
 #define colors
 #               R    G    B
