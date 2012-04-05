@@ -6,9 +6,18 @@ from Piece import *
 Class board
 The board game, pieces, and mechanics on the board.
 
+SCORING SYSTEM
+Basic, where n = level
+1 line = 40 * (n+1)
+2 line = 100 * (n+1)
+3 line = 300 * (n+1)
+4 line = 1200 * (n+1)
+
+Soft Drop = rows * 4
+Hard Drop = rows * 10
 '''
 
-class Board:
+ Board:
     def __init__(self,displaysurf):
         self.board = self.getBlankBoard()
         self.boardWithPieces = self.getBlankBoard()
@@ -16,6 +25,7 @@ class Board:
         self.piece = Piece(random.choice(list(SHAPES)))
         self.completedLines = 0
         self.totalCompletedLines = 0
+        self.score = 0
         #draw the board
         self.draw()
 

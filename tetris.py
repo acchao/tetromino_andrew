@@ -1,3 +1,8 @@
+'''
+Name: tetris.py
+Author: Andrew Chao
+Date: 4/4/2012
+'''
 import random, time, pygame, sys
 from pygame.locals import *
 from constants import *
@@ -5,36 +10,7 @@ from Board import *
 from Splashscreen import *
 from Queue import *
 
-
-'''
-
-Tetris
-    Board
-        pieces
-        draw()
-        isLineComplete()
-        clearCompleteLines()
-        movePiece()
-    Piece
-        shape
-        color
-        orientation
-        draw()
-        rotate()
-    Score
-        value
-    Level
-        value
-    Lines
-        value
-    State
-        Pause
-        Play
-        Quit
-
-'''
-
-
+#Main Game Loop
 def main():
     global FPSCLOCK, DISPLAYSURF, FONTOBJ
     pygame.init()	#initialize the game
@@ -57,7 +33,7 @@ def main():
         else:
             board.draw()
             queue.draw()
-            drawScorePanel()
+            drawScorePanel(board)
             drawInstructions()
 
         listenForQuit()
@@ -69,24 +45,30 @@ def main():
         FPSCLOCK.tick(FPS)
 
 
-
-def drawScorePanel():
+'''
+SCORING SYSTEM
+Refer to Board.Py
+'''
+def drawScorePanel(board):
     # Level
     levelSurf = FONTOBJ.render('Level: ', True, TEXTCOLOR)
     levelRect = levelSurf.get_rect()
     levelRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * PANELHEIGHT)
+    pygame.draw.rect(DISPLAYSURF, GRAY, levelRect)
     DISPLAYSURF.blit(levelSurf, levelRect)
 
     # Score
     scoreSurf = FONTOBJ.render('Score: ', True, TEXTCOLOR)
     scoreRect = scoreSurf.get_rect()
     scoreRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+1))
+    pygame.draw.rect(DISPLAYSURF, GRAY, scoreRect)
     DISPLAYSURF.blit(scoreSurf, scoreRect)
     
-    # Lines
-    lineSurf = FONTOBJ.render('Lines: ', True, TEXTCOLOR)
+    # Lines - total lines Completed
+    lineSurf = FONTOBJ.render('Lines: %s' % str(board.totalCompletedLines), True, TEXTCOLOR)
     lineRect = lineSurf.get_rect()
     lineRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+2))
+    pygame.draw.rect(DISPLAYSURF, GRAY, lineRect)
     DISPLAYSURF.blit(lineSurf, lineRect)
 
 def drawInstructions():
@@ -95,25 +77,36 @@ def drawInstructions():
     playSurf = FONTOBJ.render('P - Pause/Play ', True, TEXTCOLOR)
     playRect = playSurf.get_rect()
     playRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+4))
+    pygame.draw.rect(DISPLAYSURF, GRAY, playRect)
     DISPLAYSURF.blit(playSurf, playRect)
 
     # Q/Esc to Quit
     quitSurf = FONTOBJ.render('Q - Quit ', True, TEXTCOLOR)
     quitRect = quitSurf.get_rect()
     quitRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+5))
+    pygame.draw.rect(DISPLAYSURF, GRAY, quitRect)
     DISPLAYSURF.blit(quitSurf, quitRect)
 
     # Up Arrows
     upSurf = FONTOBJ.render('Up Arrow - Rotate ', True, TEXTCOLOR)
     upRect = upSurf.get_rect()
     upRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+6))
+    pygame.draw.rect(DISPLAYSURF, GRAY, upRect)
     DISPLAYSURF.blit(upSurf, upRect)
 
     # Other Arrows
     moveSurf = FONTOBJ.render('Other Arrows - Move ', True, TEXTCOLOR)
     moveRect = moveSurf.get_rect()
     moveRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+7))
+    pygame.draw.rect(DISPLAYSURF, GRAY, moveRect)
     DISPLAYSURF.blit(moveSurf, moveRect)
+
+    # Drop
+    dropSurf = FONTOBJ.render('Spacebar - Drop ', True, TEXTCOLOR)
+    dropRect = dropSurf.get_rect()
+    dropRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+8))
+    pygame.draw.rect(DISPLAYSURF, GRAY, dropRect)
+    DISPLAYSURF.blit(dropSurf, dropRect)
 
 def listenForQuit():
     for event in pygame.event.get():
@@ -183,7 +176,11 @@ def resumeGame():
 def move(board, queue, action):
     isSet = board.movePiece(action)
     if isSet:
+        #clear completed rows
+        board.clearCompletedRows()
+        #grab a new piece
         board.newPiece(queue.getNextPiece())
+
 
 
 
