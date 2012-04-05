@@ -18,25 +18,21 @@ Hard Drop = rows * 10
 '''
 
 class Board:
-    def __init__(self,displaysurf):
+    def __init__(self,displaysurf,fontobj):
+        self.displaysurf = displaysurf
+        self.fontobj = fontobj
+
         self.board = self.getBlankBoard()
         self.boardWithPieces = self.getBlankBoard()
-        self.displaysurf = displaysurf
         self.piece = Piece(random.choice(list(SHAPES)))
+
         self.completedLines = 0
         self.totalCompletedLines = 0
         self.score = 0
-        self.level = 1
+        self.level = LEVELONE
+        self.gameState = WIN
         #draw the board
         self.draw()
-
-        #Queue the next piece
-        #self.queueNext();
-        
-        #Generate the current piece
-
-        #set the game states
-        #new, play, pause, reset
 
     def draw(self):
         # draw the border around the board
@@ -47,12 +43,40 @@ class Board:
         # fill the background of the board
         pygame.draw.rect(self.displaysurf, BOARDGAMECOLOR, (XMARGIN, YMARGIN, BOXSIZE * BOARDWIDTH, BOXSIZE * BOARDHEIGHT))
 
-        self.drawPiece()
-
+        if self.gameState == ACTIVE:
+            self.drawPiece()
+        
         # draw the individual boxes on the board
         for x in range(BOARDWIDTH):
             for y in range(BOARDHEIGHT):
-                self.drawBox(x, y, self.board[x][y])
+                self.drawBox(x, y, self.board[x][y])   
+
+        if self.gameState == PAUSE:
+            pausedSurf = self.fontobj.render('PAUSED', True, WHITE)
+            pausedRect = pausedSurf.get_rect()
+            pausedRect.topleft = (XMARGIN + (BOARDWIDTH * BOXSIZE)/2 - pausedRect.width/2, YMARGIN + (BOXSIZE * BOARDHEIGHT / 2))
+            pygame.draw.rect(self.displaysurf, BOARDGAMECOLOR, pausedRect)
+            self.displaysurf.blit(pausedSurf, pausedRect)
+
+        elif self.gameState == OVER:
+            overSurf = self.fontobj.render('GAMEOVER!', True, WHITE)
+            overRect = overSurf.get_rect()
+            overRect.topleft = (XMARGIN + (BOARDWIDTH * BOXSIZE)/2 - overRect.width/2, YMARGIN + (BOXSIZE * BOARDHEIGHT / 2))
+            pygame.draw.rect(self.displaysurf, BOARDGAMECOLOR, overRect)
+            self.displaysurf.blit(overSurf, overRect)
+
+        elif self.gameState == WIN:
+            winSurf = self.fontobj.render('YAY! YOU WON!', True, WHITE)
+            winRect = winSurf.get_rect()
+            winRect.topleft = (XMARGIN + (BOARDWIDTH * BOXSIZE)/2 - winRect.width/2, YMARGIN + (BOXSIZE * BOARDHEIGHT / 2))
+            pygame.draw.rect(self.displaysurf, BOARDGAMECOLOR, winRect)
+            self.displaysurf.blit(winSurf, winRect)
+            win2surf = self.fontobj.render("'P' to Play again!", True, WHITE)
+            win2Rect = win2surf.get_rect()
+            win2Rect.topleft = (XMARGIN + (BOARDWIDTH * BOXSIZE)/2 - winRect.width/2, YMARGIN + BOXSIZE * (1 + BOARDHEIGHT / 2))
+            pygame.draw.rect(self.displaysurf, BOARDGAMECOLOR, win2Rect)
+            self.displaysurf.blit(win2surf, win2Rect)
+
 
     def clearOldPiece(self):
         for x in range(4):
@@ -64,9 +88,15 @@ class Board:
         #clear the old piece
         self.clearOldPiece()
 
-        #place the piece on the board.
+        #change the coordinates
         self.piece.x += dX
         self.piece.y += dY
+
+        #check if valid
+        if not self.isValidMove(None):
+            self.gameState = OVER
+
+        #place the piece on the board
         for x in range(4):
             for y in range(4):
                 if self.isOnBoard(bX=self.piece.x+x,bY=self.piece.y+y):
@@ -118,6 +148,12 @@ class Board:
         for i in range(BOARDWIDTH):
             board.append([BLANK] * BOARDHEIGHT)
         return board
+
+    def clearBoard(self):
+        for x in range(BOARDWIDTH):
+            for y in range(BOARDHEIGHT):
+                self.board[x][y] = BLANK
+                self.boardWithPieces[x][y] = BLANK
 
     #def getNextPiece(self):
 
@@ -221,8 +257,15 @@ class Board:
                                 valid = False
                         else:
                             valid = False
-        else:
-            pass
+        else:   #check current position
+            for x in range(self.piece.gridSize):
+                for y in range(self.piece.gridSize):
+                    if self.piece.piece[x][y] != BLANK: #if current box is not blank, check under it
+                        if self.isOnBoard(bX=(self.piece.x + x), bY =(self.piece.y + y)):   #check if the next spot is on the board
+                            if self.boardWithPieces[self.piece.x + x][self.piece.y + y] != BLANK:
+                                valid = False
+                        else:
+                            valid = False
 
         return valid
 
@@ -252,3 +295,15 @@ class Board:
             if self.boardWithPieces[x][y] == BLANK:
                 completed = False
         return completed
+
+    def checkGameState(self):
+        if self.level == 11:
+            self.gameState = WIN
+
+    def reset(self):
+        self.clearBoard()
+        self.completedLines = 0
+        self.totalCompletedLines = 0
+        self.score = 0
+        self.level = LEVELONE
+        self.gameState = ACTIVE

@@ -96,3 +96,6 @@ class Queue:
         for i in range(PANELWIDTH):
             panel.append([BLANK] * PANELHEIGHT)
         return panel
+
+    def reset(self):
+        self.clearOldPiece()

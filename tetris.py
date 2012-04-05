@@ -21,7 +21,7 @@ def main():
     pygame.display.set_caption('Tetris')
 
     #set up initial pieces
-    board = Board(DISPLAYSURF)
+    board = Board(DISPLAYSURF, FONTOBJ)
     queue = Queue(DISPLAYSURF)
     splashscreen = Splashscreen(DISPLAYSURF, FONTOBJ)
     DISPLAYSURF.fill(WINDOWCOLOR)
@@ -35,27 +35,27 @@ def main():
     while True: #main game loop
         #speed up the game as you level up
         fallspeed = generateSpeed(board.level)
-        if not start:
-            splashscreen.draw()
-        else:
-            board.draw()
-            queue.draw()
-            drawScorePanel(board)
-            drawInstructions()
-
         listenForQuit()
         soundOn = toggleSound(soundOn) 
         start = listenForStart(start)
-        if start:
+        if not start:
+            splashscreen.draw()
+        else:
+            board.checkGameState()
+            board.draw()
+            drawScorePanel(board)
+            drawInstructions()
+            if board.gameState == ACTIVE:
+                queue.draw()
+                #if its been longer than the fallspeed and the down key is not pressed, move the piece down
+                keystate = pygame.key.get_pressed()
+                if time.time() - lastDropTime > fallspeed and not keystate[K_DOWN]: 
+                    move(board, queue, DOWN)
+                    lastDropTime = time.time()
+            
             lastEventTime = listenForKeyEvents(board,queue,lastEventTime)
-            #if its been longer than the fallspeed and the down key is not pressed, move the piece down
-            keystate = pygame.key.get_pressed()
-            if time.time() - lastDropTime > fallspeed and not keystate[K_DOWN]: 
-                move(board, queue, DOWN)
-                lastDropTime = time.time()
+            
         
-
-
         #update screen
         pygame.display.update()
         FPSCLOCK.tick(FPS)
@@ -74,7 +74,7 @@ def drawScorePanel(board):
     DISPLAYSURF.blit(levelSurf, levelRect)
 
     # Score
-    scoreSurf = FONTOBJ.render('Score: ', True, TEXTCOLOR)
+    scoreSurf = FONTOBJ.render('Score: %s' % str(board.score), True, TEXTCOLOR)
     scoreRect = scoreSurf.get_rect()
     scoreRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+1))
     pygame.draw.rect(DISPLAYSURF, GRAY, scoreRect)
@@ -177,7 +177,13 @@ def listenForKeyEvents(board, queue,lastEventTime):
         if event.type == pygame.KEYDOWN:
             #p for pause/play
             if event.key == pygame.K_p:
-                pauseGame()
+                if board.gameState == PAUSE:
+                    board.gameState = ACTIVE
+                elif board.gameState == ACTIVE:
+                    board.gameState = PAUSE
+                if board.gameState == OVER or board.gameState == WIN:
+                    board.reset()
+                    queue.reset()
             #space to drop the piece
             elif event.key == pygame.K_SPACE:
                 action = DROP
@@ -207,7 +213,7 @@ def listenForKeyEvents(board, queue,lastEventTime):
         if time.time() - lastEventTime >= LATERALSPEED:
             action = RIGHT
 
-    if action:
+    if action and board.gameState == ACTIVE:
         move(board, queue, action)
         lastEventTime = time.time()
 
@@ -250,7 +256,6 @@ def generateSpeed(level):
     else:
         speed = 9001
     return speed
-
 
 if __name__ == '__main__':
     main()

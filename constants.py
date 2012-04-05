@@ -64,3 +64,10 @@ RIGHT = 'right'
 SOFTDROPSPEED = 0.08
 LATERALSPEED = 0.15
 DEFAULTFALLSPEED = 1
+
+#game states
+ACTIVE = 'active'
+PAUSE = 'pause'
+OVER = 'over'
+WIN = 'win'
+LEVELONE = 1
