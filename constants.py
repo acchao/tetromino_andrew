@@ -70,4 +70,10 @@ ACTIVE = 'active'
 PAUSE = 'pause'
 OVER = 'over'
 WIN = 'win'
+
+#scoring and levels
 LEVELONE = 1
+ONELINEPTS = 40
+TWOLINEPTS = 100
+THREELINEPTS = 300
+FOURLINEPTS = 1200

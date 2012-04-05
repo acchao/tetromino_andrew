@@ -18,7 +18,7 @@ def main():
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
     FONTOBJ = pygame.font.Font('freesansbold.ttf', 18)
     
-    pygame.display.set_caption('Tetris')
+    pygame.display.set_caption('Tetrisss?')
 
     #set up initial pieces
     board = Board(DISPLAYSURF, FONTOBJ)
@@ -66,69 +66,70 @@ SCORING SYSTEM
 Refer to Board.Py
 '''
 def drawScorePanel(board):
+    # Clear the Panel
+    pygame.draw.rect(DISPLAYSURF, GRAY, ((XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE),YMARGIN*2 + BOXSIZE * PANELHEIGHT,
+        WINDOWHEIGHT - YMARGIN*2 + BOXSIZE * PANELHEIGHT,
+        WINDOWWIDTH - XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE))))
+
     # Level
     levelSurf = FONTOBJ.render('Level: %s' % str(board.level), True, TEXTCOLOR)
     levelRect = levelSurf.get_rect()
     levelRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * PANELHEIGHT)
-    pygame.draw.rect(DISPLAYSURF, GRAY, levelRect)
     DISPLAYSURF.blit(levelSurf, levelRect)
 
     # Score
     scoreSurf = FONTOBJ.render('Score: %s' % str(board.score), True, TEXTCOLOR)
     scoreRect = scoreSurf.get_rect()
     scoreRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+1))
-    pygame.draw.rect(DISPLAYSURF, GRAY, scoreRect)
     DISPLAYSURF.blit(scoreSurf, scoreRect)
     
     # Lines - total lines Completed
     lineSurf = FONTOBJ.render('Lines: %s' % str(board.totalCompletedLines), True, TEXTCOLOR)
     lineRect = lineSurf.get_rect()
     lineRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+2))
-    pygame.draw.rect(DISPLAYSURF, GRAY, lineRect)
     DISPLAYSURF.blit(lineSurf, lineRect)
 
 def drawInstructions():
+    # Clear the Panel
+    pygame.draw.rect(DISPLAYSURF, GRAY, ((XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE),YMARGIN*2 + BOXSIZE * (PANELHEIGHT+4),
+        WINDOWHEIGHT - YMARGIN*2 + BOXSIZE * (PANELHEIGHT+4),
+        WINDOWWIDTH - XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE))))
+
     # P to start
     # TODO rotate between play and pause
     playSurf = FONTOBJ.render('P - Pause/Play ', True, TEXTCOLOR)
     playRect = playSurf.get_rect()
     playRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+4))
-    pygame.draw.rect(DISPLAYSURF, GRAY, playRect)
     DISPLAYSURF.blit(playSurf, playRect)
 
     # Q/Esc to Quit
     quitSurf = FONTOBJ.render('Q - Quit ', True, TEXTCOLOR)
     quitRect = quitSurf.get_rect()
     quitRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+5))
-    pygame.draw.rect(DISPLAYSURF, GRAY, quitRect)
     DISPLAYSURF.blit(quitSurf, quitRect)
     
     # Sound
     soundSurf = FONTOBJ.render('S - Sound ', True, TEXTCOLOR)
     soundRect = soundSurf.get_rect()
     soundRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+6))
-    pygame.draw.rect(DISPLAYSURF, GRAY, soundRect)
     DISPLAYSURF.blit(soundSurf, soundRect)
 
     # Up Arrows
     upSurf = FONTOBJ.render('Up Arrow - Rotate ', True, TEXTCOLOR)
     upRect = upSurf.get_rect()
     upRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+7))
-    pygame.draw.rect(DISPLAYSURF, GRAY, upRect)
     DISPLAYSURF.blit(upSurf, upRect)
 
     # Other Arrows
     moveSurf = FONTOBJ.render('Other Arrows - Move ', True, TEXTCOLOR)
     moveRect = moveSurf.get_rect()
     moveRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+8))
-    pygame.draw.rect(DISPLAYSURF, GRAY, moveRect)
     DISPLAYSURF.blit(moveSurf, moveRect)
 
     # Drop
     dropSurf = FONTOBJ.render('Spacebar - Drop ', True, TEXTCOLOR)
     dropRect = dropSurf.get_rect()
     dropRect.topleft = (XMARGIN + BOXSIZE + (BOARDWIDTH * BOXSIZE), YMARGIN*2 + BOXSIZE * (PANELHEIGHT+9))
-    pygame.draw.rect(DISPLAYSURF, GRAY, dropRect)
     DISPLAYSURF.blit(dropSurf, dropRect)
 
 def listenForQuit():
@@ -204,6 +205,7 @@ def listenForKeyEvents(board, queue,lastEventTime):
         #down arrow to speed down
         if time.time() - lastEventTime >= SOFTDROPSPEED:
             action = DOWN
+            board.softDropDistance += 1
         #left arrow - shift piece left
     elif keystate[K_LEFT] and action == None:   #checking for none allows for faster key pressing
         if time.time() - lastEventTime >= LATERALSPEED:

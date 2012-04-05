@@ -19,25 +19,42 @@ Run tetris.py to start the game. Please make sure you have pygame installed.
 
 There are 10 levels
 
-*********************************************************************************
-VERSION UPDATES
+SCORING SYSTEM
+Basic, where n = level
+1 line = 40 * (n+1)
+2 line = 100 * (n+1)
+3 line = 300 * (n+1)
+4 line = 1200 * (n+1)
 
-Update 4/4/2012 4:37 PM PST - Version 0.03
+Soft Drop = rows * 1
+Hard Drop = rows * 4
+*********************************************************************************
+UPDATES
+
+Update 4/5/2012 1:23 AM PST
+- Added Music with toggle
+- Full Cycle of gameplay: pause, play, reset on gameover/win
+- Added Scoring System
+- pieces autodrop
+- Holding a directional key will allow for continuous movement except for rotation
+
+
+Update 4/4/2012 4:37 PM PST
 - Reorganized Code for some better structure
     -Added a Queue Class
 - Lines now clear when completed and # completed is displayed
 - Font is cleaned up (except for splashscreen)
 
 
-Update 4/4/2012 11:04 AM PST - Version 0.03
+Update 4/4/2012 11:04 AM PST
 - Collision detection
 - Basic Piece movements (arrow keys)
     -Drop, Down, Left, Right, Rotate
 
-Update 4/2/2012 10:47 AM PST - Version 0.02
+Update 4/2/2012 10:47 AM PST
 - Began to instantiate classes for board and pieces (redesigning)
 - TODO: get pieces to rotate in place.
 
-Update 4/2/2012 5:38 AM PST - Version 0.01
+Update 4/2/2012 5:38 AM PST
 - Board Layout is set
 - Minimal Instructions

@@ -13,8 +13,8 @@ Basic, where n = level
 3 line = 300 * (n+1)
 4 line = 1200 * (n+1)
 
-Soft Drop = rows * 4
-Hard Drop = rows * 10
+Soft Drop = rows * 1
+Hard Drop = rows * 4
 '''
 
 class Board:
@@ -30,7 +30,9 @@ class Board:
         self.totalCompletedLines = 0
         self.score = 0
         self.level = LEVELONE
-        self.gameState = WIN
+        self.gameState = ACTIVE
+        self.softDropDistance = 0
+        self.hardDropDistance = 0
         #draw the board
         self.draw()
 
@@ -164,6 +166,7 @@ class Board:
             while self.isValidMove(action):
                 self.clearOldPiece()
                 self.piece.y += 1
+                self.hardDropDistance += 1
             self.setPiece()
             isSet = True
 
@@ -271,7 +274,6 @@ class Board:
 
     #scan for completed rows, update completedLines, clear them.
     def clearCompletedRows(self):
-        self.completedLines = 0
         y = BOARDHEIGHT - 1;
         while y >= 0:
             if self.isCompletedRow(y):
@@ -285,7 +287,29 @@ class Board:
                 y -= 1
 
         self.totalCompletedLines += self.completedLines
-        self.level += int(self.totalCompletedLines/10)
+        self.level = 1 + int(self.totalCompletedLines/10)
+        self.updateScore()
+
+    def updateScore(self):
+        #scores for completed lines
+        if self.completedLines == 1:
+            self.score += (ONELINEPTS * self.level)
+        elif self.completedLines == 2:
+            self.score += (TWOLINEPTS * self.level)
+        elif self.completedLines == 3:
+            self.score += (THREELINEPTS * self.level)
+        elif self.completedLines == 4:   #TETRIS!!
+            self.score += (FOURLINEPTS * self.level)
+
+        #score for soft and hard dropping
+        self.score += self.softDropDistance * 1
+        self.score += self.hardDropDistance * 4
+
+        #clear old tallies
+        self.completedLines = 0
+        self.softDropDistance = 0
+        self.hardDropDistance = 0
+
 
     
     #returns a boolean if a row is completed
@@ -307,3 +331,5 @@ class Board:
         self.score = 0
         self.level = LEVELONE
         self.gameState = ACTIVE
+        self.softDropDistance = 0
+        self.hardDropDistance = 0
