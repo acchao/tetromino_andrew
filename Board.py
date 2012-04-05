@@ -17,7 +17,7 @@ Soft Drop = rows * 4
 Hard Drop = rows * 10
 '''
 
- Board:
+class Board:
     def __init__(self,displaysurf):
         self.board = self.getBlankBoard()
         self.boardWithPieces = self.getBlankBoard()
