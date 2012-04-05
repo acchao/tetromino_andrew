@@ -26,6 +26,7 @@ class Board:
         self.completedLines = 0
         self.totalCompletedLines = 0
         self.score = 0
+        self.level = 1
         #draw the board
         self.draw()
 
@@ -241,6 +242,7 @@ class Board:
                 y -= 1
 
         self.totalCompletedLines += self.completedLines
+        self.level += int(self.totalCompletedLines/10)
 
     
     #returns a boolean if a row is completed

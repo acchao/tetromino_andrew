@@ -43,23 +43,30 @@ class Splashscreen:
         pygame.draw.rect(self.displaysurf, GRAY, quitRect)
         self.displaysurf.blit(quitSurf, quitRect)
 
+        # S to toggle sound
+        soundSurf = self.fontobj.render('S - Sound ', True, TEXTCOLOR)
+        soundRect = soundSurf.get_rect()
+        soundRect.topleft = (self.offset, YMARGIN*2 + BOXSIZE * 6)
+        pygame.draw.rect(self.displaysurf, GRAY, soundRect)
+        self.displaysurf.blit(soundSurf, soundRect)
+
         # Up Arrows
         upSurf = self.fontobj.render('Up Arrow - Rotate ', True, TEXTCOLOR)
         upRect = upSurf.get_rect()
-        upRect.topleft = (self.offset, YMARGIN*2 + BOXSIZE * 6)
+        upRect.topleft = (self.offset, YMARGIN*2 + BOXSIZE * 7)
         pygame.draw.rect(self.displaysurf, GRAY, upRect)
         self.displaysurf.blit(upSurf, upRect)
 
         # Other Arrows
         moveSurf = self.fontobj.render('Left, Down, Right Arrows - Move ', True, TEXTCOLOR)
         moveRect = moveSurf.get_rect()
-        moveRect.topleft = (self.offset, YMARGIN*2 + BOXSIZE * 7)
+        moveRect.topleft = (self.offset, YMARGIN*2 + BOXSIZE * 8)
         pygame.draw.rect(self.displaysurf, GRAY, moveRect)
         self.displaysurf.blit(moveSurf, moveRect)
 
         # Drop
         dropSurf = self.fontobj.render('Spacebar - Drop ', True, TEXTCOLOR)
         dropRect = dropSurf.get_rect()
-        dropRect.topleft = (self.offset, YMARGIN*2 + BOXSIZE * 8)
+        dropRect.topleft = (self.offset, YMARGIN*2 + BOXSIZE * 9)
         pygame.draw.rect(self.displaysurf, GRAY, dropRect)
         self.displaysurf.blit(dropSurf, dropRect)

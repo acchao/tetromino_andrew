@@ -60,4 +60,7 @@ DROP = 'drop'
 LEFT = 'left'
 RIGHT = 'right'
 
-
+#gameplay speeds
+SOFTDROPSPEED = 0.08
+LATERALSPEED = 0.15
+DEFAULTFALLSPEED = 1
